@@ -6,13 +6,14 @@ lines = [x.split(",") for x in lines]
 # Part 1
 res = 0
 for l, r in lines:
-    l = l.split("-")
-    r = r.split("-")
-    if int(l[0]) >= int(r[0]) and int(l[-1]) <= int(r[-1]):
+    l = list(map(int, l.split("-")))
+    r = list(map(int, r.split("-")))
+
+    if l[0] >= r[0] and l[-1] <= r[-1]:
         res += 1
         continue
 
-    if int(r[0]) >= int(l[0]) and int(r[-1]) <= int(l[-1]):
+    if r[0] >= l[0] and r[-1] <= l[-1]:
         res += 1
         continue
 print(res)
@@ -20,15 +21,13 @@ print(res)
 # part 2
 res = 0
 for l, r in lines:
-    l = l.split("-")
-    r = r.split("-")
+    l = list(map(int, l.split("-")))
+    r = list(map(int, r.split("-")))
 
-    l = list(range(int(l[0]), int(l[-1]) + 1))
-    r = list(range(int(r[0]), int(r[-1]) + 1))
+    l = range(l[0], l[-1] + 1)
+    r = range(r[0], r[-1] + 1)
 
-    for x in l:
-        if x in r:
-            res += 1
-            break
+    if len(set(l) & set(r)) > 0:
+        res += 1
 
 print(res)
