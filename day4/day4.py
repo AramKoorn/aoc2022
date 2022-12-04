@@ -9,13 +9,8 @@ for l, r in lines:
     l = list(map(int, l.split("-")))
     r = list(map(int, r.split("-")))
 
-    if l[0] >= r[0] and l[-1] <= r[-1]:
+    if l[0] >= r[0] and l[-1] <= r[-1] or r[0] >= l[0] and r[-1] <= l[-1]:
         res += 1
-        continue
-
-    if r[0] >= l[0] and r[-1] <= l[-1]:
-        res += 1
-        continue
 print(res)
 
 # part 2
