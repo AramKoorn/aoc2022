@@ -1,9 +1,10 @@
 from collections import defaultdict
+from copy import deepcopy
+
 
 f = open("input.txt", "r")
 lines = f.readlines()
 lines = [x.strip('\n').split(",") for x in lines]
-
 stacks = defaultdict(list)
 
 ok = True
@@ -25,12 +26,11 @@ for v in stacks.values():
     v.pop()
     v.reverse()
 
+stacks2 = deepcopy(stacks)
 # create list with instructions
 for x in lines[i_inst:]:
     x = x[0].split(" ")
     instructions.append((int(x[1]), int(x[3]), int(x[5])))
-
-print(stacks)
 
 # part 1
 for moves, frm, to in instructions:
@@ -44,3 +44,18 @@ for i in sorted(list(stacks)):
 print(res)
 
 
+# part 2
+for moves, frm, to in instructions:
+    to_append = []
+    for _ in range(moves):
+        crate = stacks2[frm - 1].pop()
+        to_append.append(crate)
+    to_append.reverse()
+    stacks2[to - 1] += to_append
+    del to_append
+    x = 2
+
+res = ""
+for i in sorted(list(stacks)):
+    res += stacks2[i][-1]
+print(res)
