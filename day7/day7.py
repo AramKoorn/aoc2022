@@ -5,7 +5,9 @@ lines = [x.strip('\n').split(" ") for x in lines]
 # build filesystem
 curr = "/"
 fs = {}
-test = {"/":  {"a": {"e": {"files": ["file_i"]}}, "files": ["file_f", "file_g", "file_h"]}, "files": []}
+
+# Quick visual how I want to implement file system
+# {"/":  {"a": {"e": {"files": ["file_i"]}}, "files": ["file_f", "file_g", "file_h"]}, "files": []}
 
 curr = ["/"]
 fs["/"] = {'files': []}
@@ -42,35 +44,19 @@ def rec(d):
         if k == "files":
             for f_size, _ in v:
                 t += int(f_size)
-            # print(t)
-            if t < lim:
-                sizes.append(t)
+            sizes.append(t)
         if isinstance(v, dict):
             rec(v)
 
 rec(fs)
-print(sum(sizes))
+print(sum([x for x in sizes if x < lim]))
 
 # part 2
 t = 0
 for f, _ in fs["/"]["files"]:
     t += int(f)
-
 unused = 70000000 - t
 req = 30000000 - unused
-
-sizes = []
-
-def rec(d):
-    for k, v in d.items():
-        t = 0
-        if k == "files":
-            for f_size, _ in v:
-                t += int(f_size)
-            sizes.append(t)
-        if isinstance(v, dict):
-            rec(v)
-rec(fs)
 
 sizes.sort()
 for x in sizes:
