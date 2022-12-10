@@ -13,16 +13,12 @@ def update_cycle(n, cnt):
     for _ in range(1, n + 1):
         cnt += 1
         if cnt in targets:
-            # print((v) * cnt)
             signal.append(v * cnt)
-            # print(v)
     return cnt
 
 
 for x in lines:
     v += prev
-    if v == 19:
-        b = 1
     if x[0] == "noop":
         prev = 0
         cnt = update_cycle(1, cnt)

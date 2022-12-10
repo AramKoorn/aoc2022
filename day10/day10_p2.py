@@ -24,9 +24,6 @@ def update_cycle(n, cnt, crt):
 
 for x in lines:
     v += prev
-    if v == 19:
-        b = 1
-    # print(v)
     if x[0] == "noop":
         prev = 0
         cnt, crt = update_cycle(1, cnt, crt)
