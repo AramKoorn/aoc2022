@@ -1,4 +1,5 @@
 from collections import deque
+from copy import deepcopy
 from functools import reduce
 
 
@@ -7,6 +8,7 @@ class Monkey:
         self.n = n
         self.items = None
         self.n_inspections = 0
+        self.divisor = None
 
         # Placeholder functions
         self.op = lambda: None
@@ -15,12 +17,16 @@ class Monkey:
     def __repr__(self):
         return f"Monkey: {self.n}"
 
-    def inspect(self):
+    def inspect(self, part=1):
         while len(self.items) > 0:
             self.n_inspections += 1
             item = self.items.popleft()
             item = self.op(item)
-            item = item // 3
+
+            if part == 1:
+                item = item // 3
+            else:
+                item %= lcm
 
             to = self.throw(item)
             monkeys[to].items.append(item)
@@ -35,6 +41,7 @@ class Monkey:
         self.op = lambda old: eval(expression)
 
     def parse_condition(self, line):
+        self.divisor = line[0]
         self.throw = lambda item: line[1] if item % line[0] == 0 else line[-1]
 
 monkeys = {}
@@ -69,12 +76,30 @@ for i, x in enumerate(f):
 
 
 monkeys[idx] = m
+monkeys2 = deepcopy(monkeys)  # for part 2
 
 
+lcm = 1
+for m in monkeys.values():
+    lcm *= m.divisor
+
+# part 1
 for i in range(20):
     for m in monkeys.values():
         m.inspect()
 
+res = []
+for k, v in monkeys.items():
+    res.append(v.n_inspections)
+
+res.sort()
+print(reduce(lambda x, y: x * y, res[-2:]))
+
+# part 2
+monkeys = monkeys2
+for i in range(10000):
+    for m in monkeys.values():
+        m.inspect(part=2)
 
 res = []
 for k, v in monkeys.items():
