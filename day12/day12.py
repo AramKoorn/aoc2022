@@ -37,3 +37,33 @@ while stack:
                 if (dx, dy) not in visited:
                     stack.append((cnt + 1, (dx, dy)))
                     visited.add((dx, dy))
+
+# Part 2
+res = float("inf")
+for i in range(n):
+    for j in range(m):
+        if grid[i][j] == ord("a"):
+            start = (i, j)
+
+            stack = deque()
+            stack.append((0, start))
+            offset = ((0, 1), (1, 0), (-1, 0), (0, -1))
+            visited = set((0, 0))
+
+            while stack:
+                cnt, cords = stack.popleft()
+
+                if grid[cords[0]][cords[1]] == ord("z") + 1:
+                    res = min(res, cnt)
+                    break
+
+                for x, y in offset:
+                    dx, dy = x + cords[0], y + cords[1]
+                    # check if inside the grid
+                    if 0 <= dx < n and 0 <= dy < m:
+                        if grid[dx][dy] - 1 <= grid[cords[0]][cords[1]]:
+                            if (dx, dy) not in visited:
+                                stack.append((cnt + 1, (dx, dy)))
+                                visited.add((dx, dy))
+
+print(res)
