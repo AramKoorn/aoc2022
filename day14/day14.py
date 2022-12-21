@@ -1,4 +1,7 @@
-f = open("input_test.txt", "r")
+from copy import deepcopy
+
+
+f = open("input.txt", "r")
 lines = f.readlines()
 lines = [[x.split(",") for x in x.strip("\n").split(" -> ")] for x in lines]
 
@@ -22,49 +25,48 @@ for x in lines:
             for i in xs:
                 rocks.add((i, y))
 
-def print_grid():
-    norm = min(list(rocks))[0]
-    cords = [(x - norm, y) for x, y in list(rocks)]
-    sand_cords = [(x - norm, y) for x, y in list(sand)]
-    grid = [["." for x in range(10)] for x in range(10)]
 
-    # Draw rocks
-    for x, y in cords:
-        grid[y][x] = "#"
-
-    for x, y in sand_cords:
-        grid[y][x] = "0"
-    # draw sand
-    import numpy as np
-    print(np.array(grid))
-
+# For part 2
+rocks2 = deepcopy(rocks)
 
 
 max_depth = max([x[1] for x in list(rocks)])
 sand = set()
-
 def fall(x, y):
     # falling
     if (x, y) not in rocks:
         if y > max_depth:
-            return
+            return True
         return fall(x, y + 1)
     # We hit a rock or sand
     else:
         if (x - 1, y) in rocks and (x + 1, y) in rocks:
             rocks.add((x, y - 1))
             sand.add((x, y - 1))
-            print_grid()
-            return fall(500, 0)
+            return False
         elif (x, y) in rocks and (x - 1, y) not in rocks:
             return fall(x - 1, y)
         elif (x, y) in rocks and (x + 1, y) not in rocks:
             return fall(x + 1, y)
-        else:
-            return
 
 
-fall(500, 0)
-print(sand)
+# # part 1
+while True:
+    void = fall(500, 0)
+    # print_grid()
+    if void:
+        break
 print(len(sand))
 
+# part 2
+max_depth += 2
+xmin, xmax = min(rocks2)[0], max(rocks2)[0]
+# 500 is arbitrary number could probably be much lower.
+rocks = set([(x, max_depth) for x in range(xmin - 500, xmax + 500)] + list(rocks2))
+
+
+while True:
+    void = fall(500, 0)
+    if (500, 0) in sand:
+        break
+print(len(sand))
