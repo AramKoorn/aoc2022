@@ -1,8 +1,17 @@
-f = open("input_test.txt", "r")
+f = open("input.txt", "r")
 lines = f.readlines()
 instructions = [[i for i in x.strip("\n")] for x in lines][0]
 print(instructions)
 
+'''
+Part 2 hacky really hacky. Steps
+
+
+CODE ONLY WORKS FOR THIS SPECIFIC INPUT DATA 
+- find pattern cycle by looking at the detlas (mix of manually looking at sequence and let code find the pattern)
+- if we know what the cycle pattern is we can quite easily findt the answer analytically for large N
+
+'''
 
 def draw_shape(shape, start):
     if shape == 0:
@@ -93,7 +102,7 @@ start = 0
 shape = 0
 n_i = 0
 t = 0
-goal = 2022
+goal = 6000
 cycle = []
 
 while t < goal:
@@ -141,12 +150,30 @@ for i in range(1, len(cycle)):
     deltas.append(cycle[i] - cycle[i -1])
 
 deltas
+find_pattern = [0, 0, 1, 2, 1, 2, 2, 1, 3, 0, 2, 2, 0, 0, 3, 4, 2, 1, 3, 2, 4, 0, 1]
 
+# find where cycle starts
+# for i in range(len(deltas)):
+#     cnt = 0
+#     ok = False
+#     for j in range(len(find_pattern)):
+#         if deltas[i + j] == find_pattern[j]:
+#             cnt += 1
+#         if cnt == len(find_pattern):
+#             start_cycle = i
+#             print(f"cycle {i}")
+#             ok = True
+#             cnt = 0
+    # if ok:
+    #     break
 # Just manually looking at the delta and see if there is a recurrent cycle
+print(f" cycles: {deltas[1433:3158]}")
+assert deltas[1433: 3158] == deltas[3158: 4883]
 cycle = [4, 0, 1, 2, 3, 0, 1, 1, 3, 2, 2, 0, 0, 2, 3, 4, 0, 1, 2, 1, 2, 0, 1, 2, 1, 2, 0, 1, 3, 2, 0, 0, 1, 3, 3]  # cycle for test input
-goal = 1000000000000
+cycle = deltas[1433:3158]
+new_goal = 1000000000000
 
-remaining = goal - 2022
+remaining = new_goal - goal
 full_cycles = remaining // len(cycle)
 left = remaining % len(cycle)
 
@@ -160,7 +187,7 @@ for i in range(len(deltas)):
     ok = False
     for j in range(len(cycle)):
         if deltas[i + j] == cycle[j]:
-            print(cnt)
+            # print(cnt)
             cnt += 1
         if cnt == len(cycle):
             start_cycle = i
@@ -170,8 +197,14 @@ for i in range(len(deltas)):
         break
 
 
-at_cycle = ((goal - left) - start_cycle) % len(cycle)
-answer += sum(cycle[at_cycle: at_cycle + left])
+print(f"cycle starts at: {start_cycle}")
+at_cycle = ((new_goal - left) - start_cycle) % len(cycle)
+print(f"at cycle: {at_cycle} and the length {len(cycle)} and left {left}")
+# answer += sum(cycle[at_cycle: at_cycle + left])
 # answer = ((goal - left) - at_cycle) % len(cycle)
-print(answer)
 
+for i in range(left):
+    idx = (at_cycle + i) % len(cycle)
+    answer += cycle[idx]
+print(answer)
+# 1541449275365
