@@ -94,11 +94,14 @@ shape = 0
 n_i = 0
 t = 0
 goal = 2022
-
+cycle = []
 
 while t < goal:
 
+    cycle.append(start)
+
     t += 1
+
     start += 4
     # get shape
     cords = draw_shape(shape=shape, start=start)
@@ -131,3 +134,44 @@ while t < goal:
 
 
 print(start)
+
+deltas = []
+# part 2 get delta
+for i in range(1, len(cycle)):
+    deltas.append(cycle[i] - cycle[i -1])
+
+deltas
+
+# Just manually looking at the delta and see if there is a recurrent cycle
+cycle = [4, 0, 1, 2, 3, 0, 1, 1, 3, 2, 2, 0, 0, 2, 3, 4, 0, 1, 2, 1, 2, 0, 1, 2, 1, 2, 0, 1, 3, 2, 0, 0, 1, 3, 3]  # cycle for test input
+goal = 1000000000000
+
+remaining = goal - 2022
+full_cycles = remaining // len(cycle)
+left = remaining % len(cycle)
+
+
+answer = start + (full_cycles * sum(cycle))
+
+start_cycle = float("inf")
+# find where cycle starts
+for i in range(len(deltas)):
+    cnt = 0
+    ok = False
+    for j in range(len(cycle)):
+        if deltas[i + j] == cycle[j]:
+            print(cnt)
+            cnt += 1
+        if cnt == len(cycle):
+            start_cycle = i
+            ok = True
+            cnt = 0
+    if ok:
+        break
+
+
+at_cycle = ((goal - left) - start_cycle) % len(cycle)
+answer += sum(cycle[at_cycle: at_cycle + left])
+# answer = ((goal - left) - at_cycle) % len(cycle)
+print(answer)
+
