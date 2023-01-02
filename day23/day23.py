@@ -16,24 +16,13 @@ n = len(grid)
 m = len(grid[0])
 
 elves = set()
-# proposals = set()
-
-# for i in range(n):
-#     for j in range(m):
-#         if grid[i][j] == "#":
-#             elves.add((i, j))
-
-
 print(np.array(grid))
 
 for i in reversed(range(n)):
     for j in range(m):
-        # print(grid[i][j])
-        # print(i, j)
         if grid[i][j] == "#":
             test = 2
             elves.add((j, m - 1 - i))
-            # print(grid[i][j])
 
 def plot():
     import matplotlib.pyplot as plt
@@ -42,8 +31,6 @@ def plot():
     plt.show()
 
 
-print(elves)
-print(len(elves))
 n_elves = len(elves)
 
 order = ["N", 'S', "W", "E"]
@@ -94,9 +81,9 @@ def check_move(cords):
     return False
 
 
-def simulate():
+def simulate(rounds):
 
-    for rnd in range(10):
+    for rnd in range(rounds):
 
         # draw grid
         if PLOT:
@@ -118,19 +105,36 @@ def simulate():
         for k, v in c.items():
             if v > 1:
                 proposals = [x for x in proposals if x[1] != k]
+        if len(proposals) == 0:
+            print(rnd + 1)
+            return
 
         # move all elves
+
         while len(proposals) > 0:
             e, cords = proposals.pop()
             elves.remove(e)
             elves.add(cords)
 
-simulate()
+    empty = n_empty()
+    print(empty)
 
 
-xmin = min(x[0] for x in elves)
-xmax = max(x[0] for x in elves) + 1
-ymin = min(x[1] for x in elves)
-ymax = max(x[1] for x in elves) + 1
+def n_empty():
 
-print(abs(xmax - xmin) * abs(ymax - ymin) - len(elves))
+    xmin = min(x[0] for x in elves)
+    xmax = max(x[0] for x in elves) + 1
+    ymin = min(x[1] for x in elves)
+    ymax = max(x[1] for x in elves) + 1
+
+    return abs(xmax - xmin) * abs(ymax - ymin) - len(elves)
+
+
+#part 1
+# simulate(rounds=10)
+
+#part 2
+simulate(rounds=1000)
+
+
+
