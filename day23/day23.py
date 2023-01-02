@@ -4,7 +4,7 @@ from collections import Counter
 
 PLOT = False
 
-f = open("input_test.txt", "r")
+f = open("input.txt", "r")
 lines = f.readlines()
 lines = [l.split("\n") for l in lines]
 
@@ -18,21 +18,30 @@ m = len(grid[0])
 elves = set()
 # proposals = set()
 
-for i in range(n):
-    for j in range(m):
-        if grid[i][j] == "#":
-            elves.add((i, j))
+# for i in range(n):
+#     for j in range(m):
+#         if grid[i][j] == "#":
+#             elves.add((i, j))
 
 
 print(np.array(grid))
+
+for i in reversed(range(n)):
+    for j in range(m):
+        # print(grid[i][j])
+        # print(i, j)
+        if grid[i][j] == "#":
+            test = 2
+            elves.add((j, m - 1 - i))
+            # print(grid[i][j])
+
 def plot():
     import matplotlib.pyplot as plt
-    plt.scatter(x=[x[1] for x in elves], y=[x[0] for x in elves])
+    plt.scatter(x=[x[0] for x in elves], y=[x[1] for x in elves])
     plt.grid()
     plt.show()
 
 
-# plot()
 print(elves)
 print(len(elves))
 n_elves = len(elves)
@@ -90,6 +99,8 @@ def simulate():
     for rnd in range(10):
 
         # draw grid
+        if PLOT:
+            plot()
         assert len(elves) == n_elves
 
         global proposals
@@ -118,8 +129,8 @@ simulate()
 
 
 xmin = min(x[0] for x in elves)
-xmax = max(x[0] for x in elves)
+xmax = max(x[0] for x in elves) + 1
 ymin = min(x[1] for x in elves)
-ymax = max(x[1] for x in elves)
+ymax = max(x[1] for x in elves) + 1
 
 print(abs(xmax - xmin) * abs(ymax - ymin) - len(elves))
