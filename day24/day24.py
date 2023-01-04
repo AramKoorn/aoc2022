@@ -20,7 +20,6 @@ vert = n - 2
 
 h_blizz = defaultdict(set)
 v_blizz = defaultdict(set)
-
 blizzards = defaultdict(set)
 
 
@@ -91,26 +90,43 @@ for k, v in blizzards.items():
 # BFS
 start = (0, grid[0].index("."))
 end = (n - 1, grid[n - 1].index("."))
-stack = deque([(0, start)])
-offset = ((0, 1), (1, 0), (-1, 0), (0, -1), (0, 0))
-visited = {(0, start)}
 
 
-while stack:
-    cnt, cords = stack.popleft()
-    x, y = cords
+def inside(x, y):
+    return 0 <= x < n and 0 <= y < m
 
-    # position of blizzards at time cnt
-    blizz = set(h_blizz[(cnt + 1) % hor] | v_blizz[(cnt + 1) % vert])
 
-    if (x, y) == end:
-        print(cnt)
-        break
+def bfs(start, end, c):
 
-    for dx, dy in offset:
-        xnew = x + dx
-        ynew = y + dy
+    stack = deque([(c, start)])
+    offset = ((0, 1), (1, 0), (-1, 0), (0, -1), (0, 0))
+    visited = set()
 
-        if grid[xnew][ynew] != "#" and (cnt, (xnew, ynew)) not in visited and (xnew, ynew) not in blizz:
-            stack.append([cnt + 1, (xnew, ynew)])
-            visited.add((cnt, (xnew, ynew)))
+    while stack:
+        cnt, cords = stack.popleft()
+        x, y = cords
+
+        # position of blizzards at time cnt
+        blizz = set(h_blizz[(cnt + 1) % hor] | v_blizz[(cnt + 1) % vert])
+
+        if (x, y) == end:
+            return cnt
+
+        for dx, dy in offset:
+            xnew = x + dx
+            ynew = y + dy
+
+            if not inside(xnew, ynew):
+                continue
+
+            if grid[xnew][ynew] != "#" and (cnt, (xnew, ynew)) not in visited and (xnew, ynew) not in blizz:
+                stack.append([cnt + 1, (xnew, ynew)])
+                visited.add((cnt, (xnew, ynew)))
+
+
+first = bfs(start=start, end=end, c=0)
+print(first)
+second = bfs(start=end, end=start, c=first + 1)
+print(second)
+third = bfs(start=start, end=end, c=second + 1)
+print(third)
