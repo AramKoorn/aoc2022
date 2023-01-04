@@ -1,8 +1,7 @@
 from collections import deque, defaultdict
-from copy import deepcopy
 
 
-f = open("input_test.txt", "r")
+f = open("input.txt", "r")
 lines = f.readlines()
 lines = [l.split("\n") for l in lines]
 
@@ -93,40 +92,25 @@ for k, v in blizzards.items():
 start = (0, grid[0].index("."))
 end = (n - 1, grid[n - 1].index("."))
 stack = deque([(0, start)])
-offset = ((0, 1), (1, 0), (-1, 0), (0, -1))
+offset = ((0, 1), (1, 0), (-1, 0), (0, -1), (0, 0))
 visited = {(0, start)}
 
 
 while stack:
     cnt, cords = stack.popleft()
     x, y = cords
-    print(cnt, cords)
 
     # position of blizzards at time cnt
-    blizz = frozenset(h_blizz[(cnt + 1) % hor] | v_blizz[(cnt + 1) % vert])
+    blizz = set(h_blizz[(cnt + 1) % hor] | v_blizz[(cnt + 1) % vert])
+
     if (x, y) == end:
         print(cnt)
         break
 
-    wait = True
     for dx, dy in offset:
         xnew = x + dx
         ynew = y + dy
 
-        if xnew == 2 and ynew == 1:
-            test =  2
-        # check if inside the grid
-        if x == 1 and y == 1:
-            test = 2
-
-        if grid[xnew][ynew] != "#" and (blizz, (xnew, ynew)) not in visited and (xnew, ynew) not in blizz:
-            wait = False
+        if grid[xnew][ynew] != "#" and (cnt, (xnew, ynew)) not in visited and (xnew, ynew) not in blizz:
             stack.append([cnt + 1, (xnew, ynew)])
-            visited.add((blizz, (xnew, ynew)))
-    if wait:
-        stack.append([cnt + 1, (x, y)])
-        visited.add((blizz, (x, y)))
-
-
-v = 1
-
+            visited.add((cnt, (xnew, ynew)))
