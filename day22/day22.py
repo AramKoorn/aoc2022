@@ -68,12 +68,14 @@ def teleport(d, x, y):
     return x, y
 
 
-def move(curr, steps):
+def move(curr, steps, part2=False):
     x, y = curr[1]
     d = curr[0]
     for step in range(steps):
         if d == ">":
             if y + 1 == m:
+                if part2:
+                    d, x, y = rotate(d, x, y)
                 x, y = teleport(d, x, y)
             elif grid[x][y + 1] == "#":
                 return x, y
@@ -86,6 +88,8 @@ def move(curr, steps):
 
         if d == "<":
             if y - 1 < 0:
+                if part2:
+                    d, x, y = rotate(d, x, y)
                 x, y = teleport(d, x, y)
             elif grid[x][y - 1] == "#":
                 return x, y
@@ -98,6 +102,8 @@ def move(curr, steps):
 
         if d == "v":
             if x + 1 == n:
+                if part2:
+                    d, x, y = rotate(d, x, y)
                 x, y = teleport(d, x, y)
             elif grid[x + 1][y] == "#":
                 return x, y
@@ -108,6 +114,8 @@ def move(curr, steps):
                 x, y = teleport(d, x, y)
         if d == "^":
             if x - 1 < 0:
+                if part2:
+                    d, x, y = rotate(d, x, y)
                 x, y = teleport(d, x, y)
             elif grid[x - 1][y] == "#":
                 return x, y
@@ -132,7 +140,6 @@ for i in instr:
         idx = directions.index(curr[0])
         new_direction = directions[(idx + 1) % 4]
         curr = (new_direction, curr[1])
-    # print(curr)
 
 facings = {">": 0, "v": 1, "<": 2, "^": 3}
 f = facings[curr[0]]
@@ -140,6 +147,101 @@ r = curr[1][0] + 1
 c = curr[1][1] + 1
 print(r, c)
 print(1000 * r + 4 * c + f)
+
+
+test = 2
+
+def rotate(d, x, y):
+    dx, dy = x % 50, y % 50
+    f1, f2 = x // 50, y // 50
+
+    # A to J
+    if (f1, f2) == (0, 1) and d == "^":
+        d = ">"
+        x = 150 + dy
+        y = 0
+
+    # B to I
+    elif (f1, f2) == (0, 2) and d == "^":
+        d = "^"
+        x = 199
+        y = dy
+
+    # from C to F
+    elif (f1, f2) == (0, 2) and (d == ">"):
+        d = "<"
+        x = 149 - dy
+        y = 99
+
+    # From D to E
+    elif (f1, f2) == (0, 2) and d == "v":
+        d = "<"
+        x = 50 + dy
+        y = 99
+
+    # From E to D
+    elif (f1, f2) == (1, 1) and d == ">":
+        d = "^"
+        x = 49
+        y = 100 + dx
+
+    # From F to C
+    elif (f1, f2) == (2, 1) and d == ">":
+        d = "<"
+        x = 49 - dx
+        y = 149
+
+    # From G to H
+    elif (f1, f2) == (2, 1) and d == "v":
+        d = "<"
+        x = 150 + dy
+        y = 49
+
+    # From H to G
+    elif (f1, f2) == (3, 0) and d == ">":
+        d = "^"
+        x = 149
+        y = 50 + dx
+
+    # From I to B
+    elif (f1, f2) == (3, 0) and d == "v":
+        d = "v"
+        x = 0
+        y = 100 + dy
+
+    # From J to A
+    elif (f1, f2) == (3, 0) and d == "<":
+        d = "v"
+        x = 0
+        y = 50 + dx
+
+    # from K to N
+    elif (f1, f2) == (2, 0) and d == "<":
+        d = ">"
+        x = 49 - dx
+        y = 50
+
+    # from L to M
+    elif (f1, f2) == (2, 0) and d == "^":
+        d = ">"
+        x = 50 + dy
+        y = 50
+    # from M to L
+    elif (f1, f2) == (1, 1) and d == "<":
+        d = "v"
+        x = 100
+        y = dx
+    # From N to K
+    elif (f1, f2) == (0, 1) and d == "<":
+        x = 149 - dx
+        y = 0
+        d = ">"
+    else:
+        raise ValueError("No match")
+
+    return d, x, y
+
+
 
 
 
