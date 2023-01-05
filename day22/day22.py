@@ -75,81 +75,121 @@ def move(curr, steps, part2=False):
         if d == ">":
             if y + 1 == m:
                 if part2:
-                    d, x, y = rotate(d, x, y)
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
             elif grid[x][y + 1] == "#":
-                return x, y
+                return d, x, y
             elif grid[x][y + 1] == ".":
                 y += 1
                 continue
             #  we hit empty
             else:
+                if part2:
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
 
         if d == "<":
             if y - 1 < 0:
                 if part2:
-                    d, x, y = rotate(d, x, y)
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
             elif grid[x][y - 1] == "#":
-                return x, y
+                return d, x, y
             elif grid[x][y - 1] == ".":
                 y -= 1
                 continue
             #  we hit empty
             else:
+                if part2:
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
 
         if d == "v":
             if x + 1 == n:
                 if part2:
-                    d, x, y = rotate(d, x, y)
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
             elif grid[x + 1][y] == "#":
-                return x, y
+                return d, x, y
             elif grid[x + 1][y] == ".":
                 x += 1
                 continue
             else:
+                if part2:
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
         if d == "^":
             if x - 1 < 0:
                 if part2:
-                    d, x, y = rotate(d, x, y)
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
             elif grid[x - 1][y] == "#":
-                return x, y
+                return d, x, y
             elif grid[x - 1][y] == ".":
                 x -= 1
                 continue
             else:
+                if part2:
+                    _d, _x, _y = rotate(d, x, y)
+                    if grid[_x][_y] == "#":
+                        return d, x, y
+                    else:
+                        d, x, y = _d, _x, _y
                 x, y = teleport(d, x, y)
-    return x, y
+    return d, x, y
 
 
-for i in instr:
-    print(curr)
-    if i != "R" and i != "L":
-        x, y = move(curr, i)
-        curr = (curr[0], (x, y))
-    elif i == "L":
-        idx = directions.index(curr[0])
-        new_direction = directions[(idx - 1) % 4]
-        curr = (new_direction, curr[1])
-    else:
-        idx = directions.index(curr[0])
-        new_direction = directions[(idx + 1) % 4]
-        curr = (new_direction, curr[1])
+def walk(start, part2=False):
+    curr = start
+    for i in instr:
+        # print(curr)
+        if i != "R" and i != "L":
+            d, x, y = move(curr, i, part2=part2)
+            curr = (d, (x, y))
+        elif i == "L":
+            idx = directions.index(curr[0])
+            new_direction = directions[(idx - 1) % 4]
+            curr = (new_direction, curr[1])
+        else:
+            idx = directions.index(curr[0])
+            new_direction = directions[(idx + 1) % 4]
+            curr = (new_direction, curr[1])
 
-facings = {">": 0, "v": 1, "<": 2, "^": 3}
-f = facings[curr[0]]
-r = curr[1][0] + 1
-c = curr[1][1] + 1
-print(r, c)
-print(1000 * r + 4 * c + f)
+    facings = {">": 0, "v": 1, "<": 2, "^": 3}
+    f = facings[curr[0]]
+    r = curr[1][0] + 1
+    c = curr[1][1] + 1
+    # print(r, c)
+    print(1000 * r + 4 * c + f)
 
-
-test = 2
 
 def rotate(d, x, y):
     dx, dy = x % 50, y % 50
@@ -170,7 +210,7 @@ def rotate(d, x, y):
     # from C to F
     elif (f1, f2) == (0, 2) and (d == ">"):
         d = "<"
-        x = 149 - dy
+        x = 149 - dx
         y = 99
 
     # From D to E
@@ -242,9 +282,5 @@ def rotate(d, x, y):
     return d, x, y
 
 
-
-
-
-
-
-
+walk(start=curr)
+walk(start=curr, part2=True)
